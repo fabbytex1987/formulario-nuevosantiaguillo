@@ -1,49 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro de Socios</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Formulario de Socios</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
-        form { background: white; padding: 20px; max-width: 500px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-        input, select { width: 100%; padding: 10px; margin: 8px 0; }
-        button { background: green; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-        .flash { text-align: center; margin: 10px auto; }
-        .error { color: red; }
-        .success { color: green; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f9f9f9;
+        }
+        form {
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .error_input {
+            border: 2px solid red;
+            background-color: #ffe6e6;
+        }
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
+    <h1>Registro de Socios</h1>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash">
-          {% for category, message in messages %}
-            <p class="{{ category }}">{{ message }}</p>
-          {% endfor %}
-        </div>
-      {% endif %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 
-    <form method="POST">
-        <h2>Registro de Socios</h2>
-        <input type="text" name="nombre" placeholder="Nombres y Apellidos" required>
-        <input type="text" name="cedula" placeholder="Cédula" required>
-        <input type="text" name="parroquia" placeholder="Parroquia" required>
-        <input type="text" name="direccion" placeholder="Comunidad / Dirección" required>
-        <input type="text" name="fecha_nacimiento" placeholder="Fecha de Nacimiento (DD/MM/AAAA)" required>
-        <select name="discapacidad" required>
-            <option value="">¿Tiene discapacidad?</option>
-            <option value="Sí">Sí</option>
-            <option value="No">No</option>
+    <form action="/" method="POST" novalidate>
+        <label for="nombre">Nombres y Apellidos *</label>
+        <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            required
+            value="{{ datos.nombre if datos.nombre is defined else '' }}"
+            class="{% if error_campo == 'nombre' %}error_input{% endif %}"
+        />
+
+        <label for="cedula">Cédula *</label>
+        <input
+            type="text"
+            id="cedula"
+            name="cedula"
+            required
+            value="{{ datos.cedula if datos.cedula is defined else '' }}"
+            class="{% if error_campo == 'cedula' %}error_input{% endif %}"
+        />
+
+        <label for="parroquia">Parroquia *</label>
+        <input
+            type="text"
+            id="parroquia"
+            name="parroquia"
+            required
+            value="{{ datos.parroquia if datos.parroquia is defined else '' }}"
+            class="{% if error_campo == 'parroquia' %}error_input{% endif %}"
+        />
+
+        <label for="direccion">Comunidad / Dirección *</label>
+        <input
+            type="text"
+            id="direccion"
+            name="direccion"
+            required
+            value="{{ datos.direccion if datos.direccion is defined else '' }}"
+            class="{% if error_campo == 'direccion' %}error_input{% endif %}"
+        />
+
+        <label for="fecha_nacimiento">Fecha de Nacimiento (DD/MM/AAAA) *</label>
+        <input
+            type="text"
+            id="fecha_nacimiento"
+            name="fecha_nacimiento"
+            placeholder="DD/MM/AAAA"
+            required
+            value="{{ datos.fecha_nacimiento if datos.fecha_nacimiento is defined else '' }}"
+            class="{% if error_campo == 'fecha_nacimiento' %}error_input{% endif %}"
+        />
+
+        <label for="discapacidad">¿Tiene Discapacidad? *</label>
+        <select
+            id="discapacidad"
+            name="discapacidad"
+            required
+            class="{% if error_campo == 'discapacidad' %}error_input{% endif %}"
+        >
+            <option value="" disabled {% if not datos.discapacidad %}selected{% endif %}>Selecciona una opción</option>
+            <option value="Sí" {% if datos.discapacidad == 'Sí' %}selected{% endif %}>Sí</option>
+            <option value="No" {% if datos.discapacidad == 'No' %}selected{% endif %}>No</option>
         </select>
-        <select name="nichos" required>
-            <option value="">¿Tiene nichos?</option>
-            <option value="Sí">Sí</option>
-            <option value="No">No</option>
+
+        <label for="nichos">¿Tiene Nichos? *</label>
+        <select
+            id="nichos"
+            name="nichos"
+            required
+            class="{% if error_campo == 'nichos' %}error_input{% endif %}"
+        >
+            <option value="" disabled {% if not datos.nichos %}selected{% endif %}>Selecciona una opción</option>
+            <option value="Sí" {% if datos.nichos == 'Sí' %}selected{% endif %}>Sí</option>
+            <option value="No" {% if datos.nichos == 'No' %}selected{% endif %}>No</option>
         </select>
-        <input type="text" name="celular" placeholder="Celular" required>
-        <input type="email" name="correo" placeholder="Correo (opcional)">
-        <button type="submit">Guardar</button>
+
+        <label for="celular">Celular *</label>
+        <input
+            type="tel"
+            id="celular"
+            name="celular"
+            required
+            value="{{ datos.celular if datos.celular is defined else '' }}"
+            class="{% if error_campo == 'celular' %}error_input{% endif %}"
+        />
+
+        <label for="correo">Correo (Opcional)</label>
+        <input
+            type="email"
+            id="correo"
+            name="correo"
+            value="{{ datos.correo if datos.correo is defined else '' }}"
+            class="{% if error_campo == 'correo' %}error_input{% endif %}"
+        />
+
+        <button type="submit">Enviar</button>
     </form>
 </body>
 </html>
