@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Socios</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        form { background: white; padding: 20px; max-width: 500px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; }
+        button { background: green; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        .flash { text-align: center; margin: 10px auto; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash">
+          {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <h2>Registro de Socios</h2>
+        <input type="text" name="nombre" placeholder="Nombres y Apellidos" required>
+        <input type="text" name="cedula" placeholder="Cédula" required>
+        <input type="text" name="parroquia" placeholder="Parroquia" required>
+        <input type="text" name="direccion" placeholder="Comunidad / Dirección" required>
+        <input type="text" name="fecha_nacimiento" placeholder="Fecha de Nacimiento (DD/MM/AAAA)" required>
+        <select name="discapacidad" required>
+            <option value="">¿Tiene discapacidad?</option>
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+        </select>
+        <select name="nichos" required>
+            <option value="">¿Tiene nichos?</option>
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+        </select>
+        <input type="text" name="celular" placeholder="Celular" required>
+        <input type="email" name="correo" placeholder="Correo (opcional)">
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>
